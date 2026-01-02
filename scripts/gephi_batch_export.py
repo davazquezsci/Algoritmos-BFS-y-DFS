@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 # Gephi Scripting Plugin (Jython 2.5)
 # Batch: importar .gv, correr ForceAtlas2, exportar PNG
-import sys
-print("=== START gephi_batch_export ===")
 
+print("=== START gephi_batch_export ===")
 
 import os
 from java.io import File
@@ -11,6 +10,7 @@ from org.openide.util import Lookup
 
 from org.gephi.project.api import ProjectController
 from org.gephi.io.importer.api import ImportController
+from org.gephi.io.processor.plugin import DefaultProcessor   # <-- FIX
 from org.gephi.graph.api import GraphController
 
 from org.gephi.layout.plugin.forceAtlas2 import ForceAtlas2
@@ -25,15 +25,11 @@ ROOT = r"C:\P2"
 
 # IMPORTANTE: usar java.io.File para evitar problemas con 'ñ' en rutas
 GV_DIR = File(ROOT, "outputs\\gv")
-IMG_DIR = File(ROOT, "outputs\\img") 
-
-
-
+IMG_DIR = File(ROOT, "outputs\\img")
 
 print("ROOT =", ROOT)
 print("GV_DIR =", GV_DIR.getAbsolutePath(), "exists?", GV_DIR.exists(), "isDir?", GV_DIR.isDirectory())
 print("IMG_DIR =", IMG_DIR.getAbsolutePath(), "exists?", IMG_DIR.exists(), "isDir?", IMG_DIR.isDirectory())
-
 
 # Fuerza el export PNG con tamaño fijo
 PNG_WIDTH  = 2400
@@ -125,7 +121,8 @@ def main():
 
     # Verificaciones mínimas
     if not GV_DIR.exists():
-        raise IOError("No existe GV_DIR: " + GV_DIR.getAbsolutePath())
+        print("No existe GV_DIR:", GV_DIR.getAbsolutePath())
+        raise IOError
 
     ensure_dir(IMG_DIR)
 
@@ -152,11 +149,11 @@ def main():
             workspace = pc.getCurrentWorkspace()
 
             container = importController.importFile(gv_file)
-            importController.process(container, importController.getDefaultProcessor(), workspace)
+
+            # ---- FIX: DefaultProcessor en Gephi 0.10.x ----
+            importController.process(container, DefaultProcessor(), workspace)
 
             # Layout:
-            # - árboles: menos iteraciones (se acomodan rápido)
-            # - grafos base: más iteraciones
             iters = 250 if is_tree(name) else FA2_ITERS
             run_forceatlas2(workspace, iters)
 
@@ -179,8 +176,4 @@ except Exception:
     f.write(err)
     f.close()
     print("ERROR guardado en C:\\P2\\scripts\\gephi_batch_error.txt")
-
-
-
-print("=== END gephi_batch_export ===")
-
+    print("=== END gephi_batch_export ===")
