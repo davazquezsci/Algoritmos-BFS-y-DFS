@@ -1,6 +1,8 @@
 Traceback (most recent call last):
-  File "C:\P2\scripts\gephi_batch_export.py", line 172, in <module>
+  File "C:\P2\scripts\gephi_batch_export.py", line 234, in <module>
     main()
-  File "C:\P2\scripts\gephi_batch_export.py", line 155, in main
-    importController.process(container, importController.getDefaultProcessor(), workspace)
-AttributeError: 'org.gephi.io.importer.impl.ImportControllerImpl' object has no attribute 'getDefaultProcessor'
+  File "C:\P2\scripts\gephi_batch_export.py", line 219, in main
+    apply_degree_size_ranking(workspace, MIN_NODE_SIZE, MAX_NODE_SIZE)
+  File "C:\P2\scripts\gephi_batch_export.py", line 131, in apply_degree_size_ranking
+    func = model.getNodeFunction(
+TypeError: getNodeFunction(): expected 2 args; got 3
