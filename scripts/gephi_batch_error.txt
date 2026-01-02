@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "C:\P2\scripts\gephi_batch_export.py", line 172, in <module>
+    main()
+  File "C:\P2\scripts\gephi_batch_export.py", line 155, in main
+    importController.process(container, importController.getDefaultProcessor(), workspace)
+AttributeError: 'org.gephi.io.importer.impl.ImportControllerImpl' object has no attribute 'getDefaultProcessor'
